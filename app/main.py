@@ -1,3 +1,4 @@
+
 from __future__ import annotations
 
 import base64
@@ -42,20 +43,27 @@ class ConvertRequest(BaseModel):
     content: str | None = Field(default=None, max_length=MAX_CONTENT_CHARS)
     url: str | None = Field(default=None, max_length=2048)
     format: str = "passthrough"
-    user_agent: str = Field(default="VEDA-Subscription-Converter/0.2", max_length=256)
+    user_agent: str = Field(
+        default="VEDA-Subscription-Converter/0.2",
+        max_length=256
+    )
     os: str | None = Field(default=None, max_length=64)
     hwid: str | None = Field(default=None, max_length=256)
 
     @field_validator("url")
     @classmethod
     def validate_url_shape(cls, value):
-        if not value or not value.strip():
+        if value is None or not value.strip():
             return None
+
         parsed = urlparse(value.strip())
+
         if parsed.scheme not in ("https", "http") or not parsed.hostname:
             raise ValueError("URL must be HTTP or HTTPS.")
+
         if parsed.username or parsed.password:
             raise ValueError("Embedded URL credentials are not accepted.")
+
         return value.strip()
 
     @field_validator("format")
@@ -68,9 +76,13 @@ class ConvertRequest(BaseModel):
 
 def _public_ip(host: str) -> bool:
     try:
-        infos = socket.getaddrinfo(host, None, type=socket.SOCK_STREAM)
+        infos = socket.getaddrinfo(
+            host, None, type=socket.SOCK_STREAM
+        )
         return bool(infos) and all(
-            ipaddress.ip_address(info[4][0].split("%")[0]).is_global
+            ipaddress.ip_address(
+                info[4][0].split("%")[0]
+            ).is_global
             for info in infos
         )
     except (socket.gaierror, OSError, ValueError):
@@ -79,93 +91,183 @@ def _public_ip(host: str) -> bool:
 
 def _validate_public_url(url: str) -> None:
     parsed = urlparse(url)
+
     if parsed.scheme not in ("http", "https") or not parsed.hostname:
-        raise HTTPException(400, "Only HTTP(S) URLs are supported.")
+        raise HTTPException(
+            status_code=400,
+            detail="Only HTTP(S) URLs are supported."
+        )
 
     host = parsed.hostname.lower()
-    if host == "localhost" or host.endswith((".localhost", ".local")):
-        raise HTTPException(400, "Local hostnames are not allowed.")
+
+    if host == "localhost" or host.endswith(
+        (".localhost", ".local")
+    ):
+        raise HTTPException(
+            status_code=400,
+            detail="Local hostnames are not allowed."
+        )
+
     if not _public_ip(host):
-        raise HTTPException(400, "Source host must resolve to public IP addresses.")
+        raise HTTPException(
+            status_code=400,
+            detail="Source host must resolve to public IP addresses."
+        )
 
 
-async def _fetch_public_text(url: str, user_agent: str) -> str:
+async def _fetch_public_text(
+    url: str,
+    user_agent: str
+) -> str:
     current_url = url
-    headers = {"User-Agent": user_agent, "Accept": "text/plain, */*"}
+    headers = {
+        "User-Agent": user_agent,
+        "Accept": "text/plain, */*"
+    }
     timeout = httpx.Timeout(8.0, connect=4.0)
 
     async with httpx.AsyncClient(
-        timeout=timeout, follow_redirects=False, trust_env=False
+        timeout=timeout,
+        follow_redirects=False,
+        trust_env=False
     ) as client:
         for redirect_count in range(4):
             _validate_public_url(current_url)
+
             try:
-                async with client.stream("GET", current_url, headers=headers) as r:
-                    if r.status_code in (301, 302, 303, 307, 308):
-                        location = r.headers.get("location")
+                async with client.stream(
+                    "GET",
+                    current_url,
+                    headers=headers
+                ) as response:
+
+                    if response.status_code in (
+                        301, 302, 303, 307, 308
+                    ):
+                        location = response.headers.get("location")
+
                         if not location or redirect_count >= 3:
-                            raise HTTPException(502, "Too many or invalid redirects.")
-                        current_url = str(r.url.join(location))
+                            raise HTTPException(
+                                status_code=502,
+                                detail="Too many or invalid redirects."
+                            )
+
+                        current_url = str(
+                            response.url.join(location)
+                        )
                         continue
 
-                    if r.status_code >= 400:
-                        raise HTTPException(502, f"Upstream HTTP {r.status_code}.")
+                    if response.status_code >= 400:
+                        raise HTTPException(
+                            status_code=502,
+                            detail=f"Upstream HTTP {response.status_code}."
+                        )
 
-                    length = r.headers.get("content-length")
-                    if length and length.isdigit() and int(length) > MAX_RESPONSE_BYTES:
-                        raise HTTPException(413, "Upstream response is too large.")
+                    length = response.headers.get("content-length")
 
-                    chunks, total = [], 0
-                    async for chunk in r.aiter_bytes():
+                    if (
+                        length
+                        and length.isdigit()
+                        and int(length) > MAX_RESPONSE_BYTES
+                    ):
+                        raise HTTPException(
+                            status_code=413,
+                            detail="Upstream response is too large."
+                        )
+
+                    chunks = []
+                    total = 0
+
+                    async for chunk in response.aiter_bytes():
                         total += len(chunk)
+
                         if total > MAX_RESPONSE_BYTES:
-                            raise HTTPException(413, "Upstream response is too large.")
+                            raise HTTPException(
+                                status_code=413,
+                                detail="Upstream response is too large."
+                            )
+
                         chunks.append(chunk)
 
                     return b"".join(chunks).decode(
-                        r.encoding or "utf-8", errors="replace"
+                        response.encoding or "utf-8",
+                        errors="replace"
                     )
+
             except HTTPException:
                 raise
             except httpx.TimeoutException:
-                raise HTTPException(504, "Upstream request timed out.")
+                raise HTTPException(
+                    status_code=504,
+                    detail="Upstream request timed out."
+                )
             except httpx.HTTPError:
-                raise HTTPException(502, "Could not fetch the source subscription.")
+                raise HTTPException(
+                    status_code=502,
+                    detail="Could not fetch the source subscription."
+                )
 
-    raise HTTPException(502, "Could not fetch the source subscription.")
+    raise HTTPException(
+        status_code=502,
+        detail="Could not fetch the source subscription."
+    )
 
 
 def _decode_subscription(text: str) -> str:
     cleaned = text.strip()
+
     if not cleaned:
         return ""
-    if "://" in cleaned or cleaned.startswith(("{", "[", "proxies:", "mixed-port:")):
+
+    if "://" in cleaned or cleaned.startswith(
+        ("{", "[", "proxies:", "mixed-port:")
+    ):
         return cleaned
 
     compact = "".join(cleaned.split())
+
     try:
+        padded = compact + "=" * (-len(compact) % 4)
+
         decoded = base64.b64decode(
-            compact + "=" * (-len(compact) % 4), validate=True
+            padded,
+            validate=True
         ).decode("utf-8").strip()
+
         if decoded and (
-            "://" in decoded or decoded.startswith(("{", "[", "proxies:", "mixed-port:"))
+            "://" in decoded
+            or decoded.startswith(
+                ("{", "[", "proxies:", "mixed-port:")
+            )
         ):
             return decoded
-    except (ValueError, UnicodeDecodeError, binascii.Error):
+
+    except (
+        ValueError,
+        UnicodeDecodeError,
+        binascii.Error
+    ):
         pass
+
     return cleaned
 
 
 def _extract_links(text: str) -> list[str]:
-    result, seen = [], set()
+    result = []
+    seen = set()
+
     for line in text.splitlines():
         candidate = line.strip().strip('"').strip("'")
+
         if "://" not in candidate:
             continue
+
         scheme = candidate.split("://", 1)[0].lower()
+
         if scheme in ALLOWED_SCHEMES and candidate not in seen:
             result.append(candidate)
             seen.add(candidate)
+
     return result
 
 
@@ -174,68 +276,119 @@ def _convert_output(text: str, fmt: str) -> str:
 
     if fmt in ("passthrough", "original"):
         return text
+
     if fmt in ("b64", "base64"):
-        return base64.b64encode(normalized.encode()).decode("ascii")
+        return base64.b64encode(
+            normalized.encode("utf-8")
+        ).decode("ascii")
+
     if fmt in ("url", "links"):
         links = _extract_links(normalized)
+
         if not links:
-            raise HTTPException(422, "No supported proxy URI links found.")
+            raise HTTPException(
+                status_code=422,
+                detail="No supported proxy URI links found."
+            )
+
         return "\n".join(links)
 
     try:
-        data = json.loads(normalized) if normalized.lstrip().startswith(("{", "[")) else None
+        data = (
+            json.loads(normalized)
+            if normalized.lstrip().startswith(("{", "["))
+            else None
+        )
     except json.JSONDecodeError:
         data = None
 
     if fmt == "jsonX":
-        if not isinstance(data, dict) or not isinstance(data.get("outbounds"), list):
+        if not isinstance(data, dict) or not isinstance(
+            data.get("outbounds"), list
+        ):
             raise HTTPException(
-                422, "jsonX requires an existing Xray JSON configuration."
+                status_code=422,
+                detail="jsonX requires an existing Xray JSON configuration."
             )
+
         return json.dumps(data, ensure_ascii=False, indent=2)
 
     if fmt == "jsonS":
-        if not isinstance(data, dict) or not isinstance(data.get("outbounds"), list):
+        if not isinstance(data, dict) or not isinstance(
+            data.get("outbounds"), list
+        ):
             raise HTTPException(
-                422, "jsonS requires an existing Sing-box JSON configuration."
+                status_code=422,
+                detail="jsonS requires an existing Sing-box JSON configuration."
             )
+
         return json.dumps(data, ensure_ascii=False, indent=2)
 
     if fmt == "yaml":
         try:
             parsed = yaml.safe_load(normalized)
         except yaml.YAMLError:
-            raise HTTPException(422, "Input is not valid YAML.")
+            raise HTTPException(
+                status_code=422,
+                detail="Input is not valid YAML."
+            )
+
         if not isinstance(parsed, dict) or not (
-            "proxies" in parsed or "proxy-providers" in parsed
+            "proxies" in parsed
+            or "proxy-providers" in parsed
         ):
             raise HTTPException(
-                422, "yaml requires a Clash/Mihomo-compatible YAML configuration."
+                status_code=422,
+                detail="yaml requires a Clash/Mihomo-compatible YAML configuration."
             )
-        return yaml.safe_dump(parsed, allow_unicode=True, sort_keys=False)
 
-    raise HTTPException(400, "Unsupported format.")
+        return yaml.safe_dump(
+            parsed,
+            allow_unicode=True,
+            sort_keys=False
+        )
+
+    raise HTTPException(
+        status_code=400,
+        detail="Unsupported format."
+    )
 
 
 @app.get("/api/health")
 async def health():
-    return {"status": "ok", "service": "veda-subscription-converter", "version": "0.2.0"}
+    return {
+        "status": "ok",
+        "service": "veda-subscription-converter",
+        "version": "0.2.0"
+    }
 
 
 @app.post("/api/convert")
 async def convert(req: ConvertRequest):
     if bool(req.content) == bool(req.url):
-        raise HTTPException(400, "Provide either content or URL, not both.")
+        raise HTTPException(
+            status_code=400,
+            detail="Provide either content or URL, not both."
+        )
 
     source = req.content
+
     if req.url:
-        source = await _fetch_public_text(req.url, req.user_agent)
+        source = await _fetch_public_text(
+            req.url,
+            req.user_agent
+        )
 
     output = _convert_output(source or "", req.format)
+
     return {
         "format": req.format,
         "output": output,
-        "items": len(_extract_links(_decode_subscription(source or ""))),
+        "items": len(
+            _extract_links(
+                _decode_subscription(source or "")
+            )
+        ),
         "source": "url" if req.url else "content"
     }
 
@@ -249,21 +402,51 @@ async def subscription_link(
     hwid: str | None = Query(default=None, max_length=256),
 ):
     parsed = urlparse(url)
-    if parsed.scheme not in ("http", "https") or not parsed.hostname:
-        raise HTTPException(400, "Нужна корректная HTTP или HTTPS ссылка.")
-    if parsed.username or parsed.password:
-        raise HTTPException(400, "Ссылки со встроенными паролями не поддерживаются.")
-    if ua not in UA_PRESETS:
-        raise HTTPException(400, "Неизвестный шаблон UA.")
-    if ua == "web" and not os:
-        raise HTTPException(400, "Для шаблона web необходимо указать os.")
-    if os and os.lower() not in {"android", "ios", "windows", "macos", "linux"}:
-        raise HTTPException(400, "Неизвестное значение OS.")
-    if format not in OUTPUT_FORMATS:
-        raise HTTPException(400, "Неизвестный формат ответа.")
 
-    # Note: UA presets are placeholders until exact provider values are confirmed.
-    content = await _fetch_public_text(url, UA_PRESETS[ua])
+    if parsed.scheme not in ("http", "https") or not parsed.hostname:
+        raise HTTPException(
+            status_code=400,
+            detail="Нужна корректная HTTP или HTTPS ссылка."
+        )
+
+    if parsed.username or parsed.password:
+        raise HTTPException(
+            status_code=400,
+            detail="Ссылки со встроенными паролями не поддерживаются."
+        )
+
+    if ua not in UA_PRESETS:
+        raise HTTPException(
+            status_code=400,
+            detail="Неизвестный шаблон UA."
+        )
+
+    if ua == "web" and not os:
+        raise HTTPException(
+            status_code=400,
+            detail="Для шаблона web необходимо указать os."
+        )
+
+    if os and os.lower() not in {
+        "android", "ios", "windows", "macos", "linux"
+    }:
+        raise HTTPException(
+            status_code=400,
+            detail="Неизвестное значение OS."
+        )
+
+    if format not in OUTPUT_FORMATS:
+        raise HTTPException(
+            status_code=400,
+            detail="Неизвестный формат ответа."
+        )
+
+    # UA presets are placeholders until exact provider values are confirmed.
+    content = await _fetch_public_text(
+        url,
+        UA_PRESETS[ua]
+    )
+
     output = _convert_output(content, format)
 
     return PlainTextResponse(
@@ -277,4 +460,8 @@ async def index():
     return FileResponse("app/static/index.html")
 
 
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
+app.mount(
+    "/static",
+    StaticFiles(directory="app/static"),
+    name="static"
+)
