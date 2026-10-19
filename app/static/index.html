@@ -1,115 +1,191 @@
-<!doctype html>
-<html lang="en">
+
+<!DOCTYPE html>
+<html lang="ru">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#090b0a">
-  <title>VEDA — Subscription Tools</title>
-  <style>
-    :root{--bg:#090b0a;--panel:#111512;--panel2:#171d19;--line:#29342c;--lime:#b7f34a;--text:#f3f7f0;--muted:#9aa79a;--danger:#ff8b8b}
-    *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% 0%,#1a2816 0,transparent 38%),var(--bg);color:var(--text);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
-    .wrap{max-width:1040px;margin:0 auto;padding:28px 20px 44px}.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:54px}
-    .brand{display:flex;align-items:center;gap:12px}.mark{width:44px;height:44px;border-radius:14px;background:var(--lime);color:#10150b;display:grid;place-items:center;font-weight:900;font-size:23px;box-shadow:0 0 34px #b7f34a20}
-    .brand-name{font-weight:900;letter-spacing:.18em;font-size:18px}.brand-sub{color:var(--lime);font-size:10px;letter-spacing:.19em;font-weight:800}
-    .status{border:1px solid #34452c;border-radius:999px;padding:7px 11px;color:var(--lime);font-size:11px;letter-spacing:.12em;display:flex;align-items:center;gap:7px}.dot{width:6px;height:6px;border-radius:50%;background:var(--lime)}
-    .hero{max-width:720px;margin:0 auto 30px;text-align:center}.eyebrow{color:var(--lime);font-size:11px;letter-spacing:.2em;font-weight:800}.hero h1{font-size:clamp(34px,6vw,58px);line-height:1.06;letter-spacing:-.055em;margin:15px 0}.hero h1 span{color:var(--lime)}.hero p{color:var(--muted);font-size:16px;margin:0 auto;max-width:570px}
-    .app{max-width:780px;margin:auto;border:1px solid var(--line);border-radius:24px;background:linear-gradient(145deg,#131814f5,#0d100ef5);padding:clamp(18px,4vw,32px);box-shadow:0 30px 100px #0008}
-    .section-title{font-weight:800;font-size:17px;margin:0 0 4px}.section-desc{font-size:12px;color:var(--muted);margin:0 0 20px}
-    .tabs{display:grid;grid-template-columns:1fr 1fr;background:#090c0a;border:1px solid var(--line);border-radius:12px;padding:4px;margin-bottom:20px;gap:4px}.tab{border:0;background:transparent;color:var(--muted);border-radius:9px;padding:11px;font-weight:700;cursor:pointer}.tab.active{background:var(--panel2);color:var(--lime);box-shadow:inset 0 0 0 1px #3b4b31}
-    label{display:block;font-size:12px;color:#c5cec3;font-weight:700;margin:0 0 8px}.field{margin-bottom:18px}input,textarea,select{width:100%;background:#090c0a;border:1px solid #303b32;border-radius:11px;color:var(--text);padding:13px 14px;font:inherit;outline:none;transition:border .15s}input:focus,textarea:focus,select:focus{border-color:var(--lime);box-shadow:0 0 0 3px #b7f34a14}textarea{min-height:120px;resize:vertical}input::placeholder,textarea::placeholder{color:#687368}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.hint{font-size:11px;color:var(--muted);margin-top:7px}.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:4px}.btn{border:1px solid var(--line);border-radius:11px;padding:12px 16px;font-weight:800;cursor:pointer;font:inherit;transition:transform .15s,opacity .15s}.btn:hover{transform:translateY(-1px)}.btn-primary{background:var(--lime);border-color:var(--lime);color:#10150b;flex:1;min-width:180px}.btn-secondary{background:#151a16;color:var(--text)}.btn:disabled{opacity:.55;cursor:wait;transform:none}
-    .result{margin-top:24px;border:1px solid var(--line);border-radius:15px;overflow:hidden;display:none}.result-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;background:#151b16;border-bottom:1px solid var(--line)}.result-title{font-size:12px;font-weight:800;letter-spacing:.08em}.result-meta{color:var(--muted);font-size:11px}.result textarea{border:0;border-radius:0;min-height:160px;background:#0a0d0b;font:12px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace}.message{display:none;padding:12px 14px;border-radius:10px;margin-top:15px;font-size:13px}.message.error{display:block;background:#2a1515;border:1px solid #633333;color:#ffb0b0}.message.ok{display:block;background:#142014;border:1px solid #304a2c;color:#c8f79a}
-    .footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:#687368;font-size:10px;letter-spacing:.12em;margin:28px 4px 0}.hidden{display:none!important}
-    @media(max-width:600px){.wrap{padding:20px 13px 30px}.top{margin-bottom:42px}.grid{grid-template-columns:1fr;gap:0}.status{font-size:9px}.hero p{font-size:14px}.app{border-radius:18px}.footer{line-height:1.8}}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090b0a">
+<title>VEDA — Subscription Tools</title>
+<style>
+:root{color-scheme:dark;--bg:#090b0a;--panel:#111512;--line:#29342c;--lime:#b7f34a;--text:#f3f7f0;--muted:#9aa79a}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at 80% 0%,#1a2816,transparent 45%),var(--bg);color:var(--text);font:15px/1.5 system-ui,sans-serif;min-height:100vh}
+main{max-width:760px;margin:auto;padding:24px 15px 40px}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:42px;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:3px}
+.mark{background:var(--lime);color:#10150b;padding:8px 13px;border-radius:12px;font-size:22px}
+small,.muted{color:var(--muted)}
+.status{color:var(--lime);font-size:10px}
+.hero{text-align:center;margin-bottom:28px}
+.hero h1{font-size:clamp(32px,7vw,52px);line-height:1.1;margin:12px 0}
+.green{color:var(--lime)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:22px;margin-bottom:18px}
+label{display:block;margin:18px 0 7px;font-size:12px;font-weight:750;color:#aeb9ad}
+input,select,textarea{width:100%;padding:13px;background:#090c0a;border:1px solid var(--line);border-radius:10px;color:var(--text);font:inherit}
+textarea{min-height:100px;overflow-wrap:anywhere}
+button{padding:13px 15px;border:0;border-radius:10px;font:inherit;font-weight:750;cursor:pointer}
+button:disabled{opacity:.55}
+.primary{background:var(--lime);color:#10150b;flex:1}
+.secondary{background:#202720;color:var(--text)}
+.actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.result{display:none;margin-top:20px}
+.msg{margin-top:13px;color:var(--lime);overflow-wrap:anywhere}
+.note{font-size:12px;color:var(--muted)}
+footer{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:25px;font-size:10px;color:#687368}
+</style>
 </head>
 <body>
-  <main class="wrap">
-    <header class="top">
-      <div class="brand"><div class="mark">V</div><div><div class="brand-name">VEDA</div><div class="brand-sub">SUBSCRIPTION TOOLS</div></div></div>
-      <div class="status"><span class="dot"></span> SYSTEM READY</div>
-    </header>
-    <section class="hero">
-      <div class="eyebrow">SIMPLE. PRECISE. YOURS.</div>
-      <h1>Your subscription.<br><span>Your control.</span></h1>
-      <p>Convert and prepare subscription content with a clean, lightweight toolkit built by VEDA.</p>
-    </section>
+<main>
+<header>
+  <div class="brand"><span class="mark">V</span><span>VEDA<br><small>SUBSCRIPTION TOOLS</small></span></div>
+  <span class="status">● VEDA</span>
+</header>
 
-    <section class="app">
-      <h2 class="section-title">Subscription converter</h2>
-      <p class="section-desc">Use a public subscription URL or paste the subscription content directly.</p>
-      <div class="tabs" role="tablist" aria-label="Input method">
-        <button class="tab active" id="urlTab" type="button">Subscription URL</button>
-        <button class="tab" id="contentTab" type="button">Paste content</button>
-      </div>
-      <form id="convertForm">
-        <div id="urlPanel">
-          <div class="field"><label for="sourceUrl">SOURCE URL</label><input id="sourceUrl" type="url" placeholder="https://provider.example/subscription" autocomplete="url"><div class="hint">Use a URL you own or are authorized to access. Public HTTP(S) sources only.</div></div>
-        </div>
-        <div id="contentPanel" class="hidden">
-          <div class="field"><label for="sourceContent">SUBSCRIPTION CONTENT</label><textarea id="sourceContent" placeholder="Paste Base64 text, proxy links, or supported subscription text…"></textarea></div>
-        </div>
-        <div class="grid">
-          <div class="field"><label for="format">OUTPUT FORMAT</label><select id="format"><option value="original">Original / decoded text</option><option value="base64">Base64</option><option value="links">Extract proxy links</option></select></div>
-          <div class="field"><label for="userAgent">USER-AGENT (optional)</label><input id="userAgent" maxlength="256" value="VEDA-Subscription-Converter/0.1" placeholder="Client user-agent"></div>
-        </div>
-        <div class="grid">
-          <div class="field"><label for="os">OS LABEL (optional)</label><select id="os"><option value="">Not set</option><option>Android</option><option>iOS</option><option>Windows</option><option>macOS</option><option>Linux</option></select></div>
-          <div class="field"><label for="hwid">HWID LABEL (optional)</label><input id="hwid" maxlength="256" placeholder="Optional identifier"></div>
-        </div>
-        <div class="actions"><button class="btn btn-primary" id="submitBtn" type="submit">Convert subscription ↗</button><button class="btn btn-secondary" id="clearBtn" type="button">Clear</button></div>
-      </form>
-      <div id="message" class="message" role="status" aria-live="polite"></div>
-      <section id="result" class="result">
-        <div class="result-head"><div><div class="result-title">VEDA OUTPUT</div><div id="resultMeta" class="result-meta"></div></div><button class="btn btn-secondary" id="copyBtn" type="button">Copy output</button></div>
-        <textarea id="output" readonly aria-label="Converted output"></textarea>
-      </section>
-    </section>
-    <footer class="footer"><span>VEDA © 2026</span><span>SUBSCRIPTION CONVERTER · MVP 0.1</span><span>PRIVACY-FIRST BY DESIGN</span></footer>
-  </main>
+<section class="hero">
+  <small class="green">ПРОСТО. ТОЧНО. ВАШЕ.</small>
+  <h1>Ваша подписка.<br><span class="green">Ваш контроль.</span></h1>
+  <p class="muted">Создавайте ссылки VEDA для VPN-приложений.</p>
+</section>
+
+<section class="card">
+  <h3>Сборщик ссылки</h3>
+  <p class="muted">Настройки подписки → готовая ссылка VEDA.</p>
+
+  <label for="url">UPSTREAM URL — ТВОЯ ПОДПИСКА</label>
+  <input id="url" type="url" placeholder="https://veda.beer/sub/blizzard-8325" autocomplete="url">
+
+  <label for="ua">UA — ШАБЛОН USER-AGENT</label>
+  <select id="ua">
+    <option value="default">— (дефолт: Happ / Android)</option>
+    <option value="happ">happ</option>
+    <option value="v2">v2</option>
+    <option value="incy">incy</option>
+    <option value="web">web (нужен os=)</option>
+  </select>
+
+  <div id="os-wrap" hidden>
+    <label for="os">OS — ОПЕРАЦИОННАЯ СИСТЕМА</label>
+    <select id="os">
+      <option value="">Выберите OS</option>
+      <option value="android">Android</option>
+      <option value="ios">iOS</option>
+      <option value="windows">Windows</option>
+      <option value="macos">macOS</option>
+      <option value="linux">Linux</option>
+    </select>
+  </div>
+
+  <label for="hwid">H — HWID (необязательно)</label>
+  <div class="actions">
+    <input id="hwid" type="text" maxlength="256" placeholder="HWID или оставь пустым" style="flex:1;min-width:180px">
+    <button class="secondary" id="random">Случайный</button>
+  </div>
+
+  <label for="mode">ФОРМАТ ОТВЕТА</label>
+  <select id="mode">
+    <option value="passthrough">— passthrough (как есть)</option>
+    <option value="url">url — plain-text ссылки</option>
+    <option value="b64">b64 — гарантированный base64</option>
+    <option value="jsonX">jsonX — Xray JSON</option>
+    <option value="jsonS">jsonS — Sing-box JSON</option>
+    <option value="yaml">yaml — Clash / Mihomo</option>
+  </select>
+
+  <div class="actions">
+    <button class="primary" id="go">Создать ссылку ↗</button>
+    <button class="secondary" id="clear">Очистить</button>
+  </div>
+
+  <div id="message" class="msg" role="status"></div>
+
+  <div id="result" class="result">
+    <label for="output">РЕЗУЛЬТАТ</label>
+    <textarea id="output" readonly></textarea>
+    <div class="actions">
+      <button class="primary" id="copy">Копировать результат</button>
+      <button class="secondary" id="open">Открыть в браузере</button>
+    </div>
+    <p class="note">Проверь ссылку в своём VPN-приложении перед передачей другим пользователям.</p>
+  </div>
+</section>
+
+<footer>
+  <span>VEDA © 2026</span>
+  <span>SUBSCRIPTION TOOLS</span>
+  <span>PRIVACY FIRST</span>
+</footer>
+</main>
+
 <script>
 const $ = id => document.getElementById(id);
-let inputMode = 'url';
-function setMode(mode){
-  inputMode = mode;
-  $('urlPanel').classList.toggle('hidden', mode !== 'url');
-  $('contentPanel').classList.toggle('hidden', mode !== 'content');
-  $('urlTab').classList.toggle('active', mode === 'url');
-  $('contentTab').classList.toggle('active', mode === 'content');
-  clearMessage();
-}
-$('urlTab').addEventListener('click', () => setMode('url'));
-$('contentTab').addEventListener('click', () => setMode('content'));
-function clearMessage(){ $('message').className='message'; $('message').textContent=''; }
-function showMessage(text, kind='error'){ $('message').className='message '+kind; $('message').textContent=text; }
-$('convertForm').addEventListener('submit', async event => {
-  event.preventDefault(); clearMessage();
-  const payload = {format:$('format').value, user_agent:$('userAgent').value, os:$('os').value || null, hwid:$('hwid').value || null};
-  if(inputMode === 'url') payload.url = $('sourceUrl').value.trim();
-  else payload.content = $('sourceContent').value;
-  if(inputMode === 'url' && !payload.url){ showMessage('Please enter a subscription URL.'); return; }
-  if(inputMode === 'content' && !payload.content.trim()){ showMessage('Please paste subscription content.'); return; }
-  $('submitBtn').disabled = true; $('submitBtn').textContent = 'Converting…';
+
+$('ua').addEventListener('change', () => {
+  $('os-wrap').hidden = $('ua').value !== 'web';
+});
+
+$('random').addEventListener('click', () => {
+  const bytes = new Uint8Array(8);
+  crypto.getRandomValues(bytes);
+  $('hwid').value = [...bytes].map(x => x.toString(16).padStart(2,'0')).join('');
+});
+
+$('go').addEventListener('click', () => {
+  $('message').textContent = '';
+  $('result').style.display = 'none';
+
+  let source;
   try {
-    const response = await fetch('/api/convert', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-    const data = await response.json();
-    if(!response.ok) throw new Error(data.detail || 'Conversion failed.');
-    $('output').value = data.output;
-    $('resultMeta').textContent = `${data.format.toUpperCase()} · ${data.items} recognized link(s)`;
-    $('result').style.display = 'block';
-    showMessage('Conversion complete.', 'ok');
-  } catch (error) {
-    showMessage(error.message || 'Could not connect to VEDA.');
-  } finally {
-    $('submitBtn').disabled = false; $('submitBtn').textContent = 'Convert subscription ↗';
+    source = new URL($('url').value.trim());
+    if (!['http:', 'https:'].includes(source.protocol)) throw Error();
+  } catch {
+    $('message').textContent = 'Введите корректный HTTP или HTTPS URL.';
+    return;
+  }
+
+  const ua = $('ua').value;
+  const os = $('os').value;
+  if (ua === 'web' && !os) {
+    $('message').textContent = 'Для шаблона web необходимо выбрать OS.';
+    return;
+  }
+
+  const params = new URLSearchParams();
+  params.set('url', source.href);
+  params.set('ua', ua);
+  params.set('format', $('mode').value);
+  if (os) params.set('os', os);
+  if ($('hwid').value.trim()) params.set('hwid', $('hwid').value.trim());
+
+  $('output').value = location.origin + '/sub?' + params.toString();
+  $('result').style.display = 'block';
+  $('message').textContent = 'Ссылка VEDA создана. Сначала проверь её работу.';
+});
+
+$('copy').addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText($('output').value);
+    $('message').textContent = 'Ссылка скопирована.';
+  } catch {
+    $('output').select();
+    document.execCommand('copy');
+    $('message').textContent = 'Выдели и скопируй ссылку.';
   }
 });
-$('copyBtn').addEventListener('click', async () => {
-  try { await navigator.clipboard.writeText($('output').value); $('copyBtn').textContent='Copied ✓'; setTimeout(()=> $('copyBtn').textContent='Copy output',1200); }
-  catch { $('output').select(); document.execCommand('copy'); showMessage('Output selected/copied where supported.', 'ok'); }
+
+$('open').addEventListener('click', () => {
+  window.open($('output').value, '_blank', 'noopener');
 });
-$('clearBtn').addEventListener('click', () => {
-  $('sourceUrl').value=''; $('sourceContent').value=''; $('hwid').value=''; $('output').value=''; $('result').style.display='none'; clearMessage();
+
+$('clear').addEventListener('click', () => {
+  $('url').value = '';
+  $('hwid').value = '';
+  $('ua').value = 'default';
+  $('os').value = '';
+  $('mode').value = 'passthrough';
+  $('os-wrap').hidden = true;
+  $('output').value = '';
+  $('message').textContent = '';
+  $('result').style.display = 'none';
 });
 </script>
 </body>
