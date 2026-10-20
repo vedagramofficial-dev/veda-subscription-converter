@@ -32,6 +32,18 @@ button:disabled{opacity:.55}
 .msg{margin-top:13px;color:var(--lime);overflow-wrap:anywhere}
 .note{font-size:12px;color:var(--muted)}
 footer{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:25px;font-size:10px;color:#687368}
+
+/* VEDA Community */
+.community-section{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:22px;margin-top:28px}
+.community-title{margin:0 0 8px;color:var(--lime);font-size:22px;font-weight:900;letter-spacing:1px}
+.community-description{margin:0 0 20px;color:var(--muted);font-size:14px;line-height:1.6}
+.community-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.community-link{display:block;padding:16px;color:var(--text);text-decoration:none;background:var(--bg);border:1px solid var(--line);border-radius:12px;transition:border-color .2s,transform .2s}
+.community-link:hover{border-color:var(--lime);transform:translateY(-2px)}
+.community-link strong{display:block;margin-bottom:7px;font-size:15px}
+.community-link span{display:block;color:var(--muted);font-size:13px;line-height:1.5}
+.community-link .community-action{margin-top:12px;color:var(--lime);font-weight:700}
+@media(max-width:480px){.community-section{padding:16px}.community-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -106,6 +118,41 @@ footer{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin
       <button class="secondary" id="open">Открыть в браузере</button>
     </div>
     <p class="note">Проверь ссылку в своём VPN-приложении перед передачей другим пользователям.</p>
+  </div>
+</section>
+
+<!-- VEDA COMMUNITY -->
+<section class="community-section">
+  <h2 class="community-title">VEDA COMMUNITY</h2>
+  <p class="community-description">
+    Наши официальные ресурсы и сообщество VEDA VPN.
+    Будьте в курсе новостей и обновлений!
+  </p>
+
+  <div class="community-grid">
+    <a class="community-link" href="https://t.me/vedavpn_official" target="_blank" rel="noopener noreferrer">
+      <strong>📢 Официальный канал</strong>
+      <span>Новости и обновления VEDA VPN</span>
+      <span class="community-action">Перейти в канал ↗</span>
+    </a>
+
+    <a class="community-link" href="https://t.me/vedavpn" target="_blank" rel="noopener noreferrer">
+      <strong>🌐 VEDA VPN</strong>
+      <span>Наше сообщество в Telegram</span>
+      <span class="community-action">Открыть сообщество ↗</span>
+    </a>
+
+    <a class="community-link" href="https://t.me/vedavpn_bot" target="_blank" rel="noopener noreferrer">
+      <strong>🤖 Telegram-бот</strong>
+      <span>Бот VEDA VPN</span>
+      <span class="community-action">Запустить бота ↗</span>
+    </a>
+
+    <a class="community-link" href="https://t.me/vedavpnforum" target="_blank" rel="noopener noreferrer">
+      <strong>💬 Форум</strong>
+      <span>Общение и помощь пользователям</span>
+      <span class="community-action">Перейти на форум ↗</span>
+    </a>
   </div>
 </section>
 
