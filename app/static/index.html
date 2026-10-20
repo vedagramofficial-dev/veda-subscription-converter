@@ -1,239 +1,52 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#090b0a">
-<title>VEDA — Subscription Tools</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#071426">
+<title>VEDA Converter — Конвертер подписок</title>
 <style>
-:root{color-scheme:dark;--bg:#090b0a;--panel:#111512;--line:#29342c;--lime:#b7f34a;--text:#f3f7f0;--muted:#9aa79a}
-*{box-sizing:border-box}
-body{margin:0;background:radial-gradient(ellipse at 80% 0%,#1a2816,transparent 45%),var(--bg);color:var(--text);font:15px/1.5 system-ui,sans-serif;min-height:100vh}
-main{max-width:760px;margin:auto;padding:24px 15px 40px}
-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:42px;gap:12px}
-.brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:3px}
-.mark{background:var(--lime);color:#10150b;padding:8px 13px;border-radius:12px;font-size:22px}
-small,.muted{color:var(--muted)}
-.status{color:var(--lime);font-size:10px}
-.hero{text-align:center;margin-bottom:28px}
-.hero h1{font-size:clamp(32px,7vw,52px);line-height:1.1;margin:12px 0}
-.green{color:var(--lime)}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:22px;margin-bottom:18px}
-label{display:block;margin:18px 0 7px;font-size:12px;font-weight:750;color:#aeb9ad}
-input,select,textarea{width:100%;padding:13px;background:#090c0a;border:1px solid var(--line);border-radius:10px;color:var(--text);font:inherit}
-textarea{min-height:100px;overflow-wrap:anywhere}
-button{padding:13px 15px;border:0;border-radius:10px;font:inherit;font-weight:750;cursor:pointer}
-button:disabled{opacity:.55}
-.primary{background:var(--lime);color:#10150b;flex:1}
-.secondary{background:#202720;color:var(--text)}
-.actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
-.result{display:none;margin-top:20px}
-.msg{margin-top:13px;color:var(--lime);overflow-wrap:anywhere}
-.note{font-size:12px;color:var(--muted)}
-footer{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:25px;font-size:10px;color:#687368}
-
-/* VEDA Community */
-.community-section{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:22px;margin-top:28px}
-.community-title{margin:0 0 8px;color:var(--lime);font-size:22px;font-weight:900;letter-spacing:1px}
-.community-description{margin:0 0 20px;color:var(--muted);font-size:14px;line-height:1.6}
-.community-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.community-link{display:block;padding:16px;color:var(--text);text-decoration:none;background:var(--bg);border:1px solid var(--line);border-radius:12px;transition:border-color .2s,transform .2s}
-.community-link:hover{border-color:var(--lime);transform:translateY(-2px)}
-.community-link strong{display:block;margin-bottom:7px;font-size:15px}
-.community-link span{display:block;color:var(--muted);font-size:13px;line-height:1.5}
-.community-link .community-action{margin-top:12px;color:var(--lime);font-weight:700}
-@media(max-width:480px){.community-section{padding:16px}.community-grid{grid-template-columns:1fr}}
+:root{color-scheme:dark;--bg:#06101f;--panel:#0c1b30;--panel2:#10243d;--border:rgba(143,180,224,.16);--text:#edf5ff;--muted:#9eb1ca;--blue:#4d9dff;--cyan:#5ce1e6;--success:#4ade80;--danger:#fb7185;--radius:20px}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 15% 0%,rgba(37,99,235,.18),transparent 36rem),radial-gradient(ellipse at 100% 15%,rgba(92,225,230,.08),transparent 32rem),var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:inherit;text-decoration:none}button,input,select{font:inherit}.container{width:min(1080px,calc(100% - 32px));margin:0 auto}header{padding:28px 0 22px}.brand{display:flex;align-items:center;gap:13px}.logo{display:grid;place-items:center;width:48px;height:48px;border-radius:15px;font-weight:900;letter-spacing:-1px;background:linear-gradient(135deg,var(--blue),var(--cyan));color:#06101f;box-shadow:0 8px 28px rgba(77,157,255,.22)}.brand h1{margin:0;font-size:clamp(21px,4vw,28px);letter-spacing:-.7px}.brand p{margin:2px 0 0;color:var(--muted);font-size:13px}.hero{padding:22px 0 28px}.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:6px 11px;border:1px solid var(--border);border-radius:999px;color:#b9d8ff;background:rgba(77,157,255,.08);font-size:12px;font-weight:700}.dot{width:7px;height:7px;background:var(--success);border-radius:50%;box-shadow:0 0 12px rgba(74,222,128,.6)}.hero h2{margin:16px 0 8px;max-width:720px;font-size:clamp(30px,5.5vw,48px);line-height:1.08;letter-spacing:-1.5px}.hero h2 span{color:var(--blue)}.hero>p{max-width:650px;color:var(--muted);margin:0}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:22px 0 28px}.stat,.panel,.promo{border:1px solid var(--border);background:rgba(12,27,48,.88);border-radius:var(--radius)}.stat{padding:16px 18px}.stat-label{color:var(--muted);font-size:12px}.stat-value{margin-top:4px;font-size:24px;font-weight:800;letter-spacing:-.5px}.layout{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(260px,.8fr);gap:18px;align-items:start}.panel{padding:clamp(18px,3vw,28px)}.panel h3,.promo h3{margin:0;font-size:20px;letter-spacing:-.3px}.subheading{color:var(--muted);margin:5px 0 22px;font-size:13px}.field{margin:17px 0}.field label{display:block;margin-bottom:8px;font-size:13px;font-weight:700;color:#dbe9fb}.hint{color:var(--muted);font-size:12px;font-weight:400}input,select{width:100%;min-height:46px;padding:11px 13px;color:var(--text);border:1px solid rgba(143,180,224,.22);border-radius:12px;background:#071426;outline:none}input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(77,157,255,.13)}.inline{display:grid;grid-template-columns:1fr auto;gap:9px}.btn{display:inline-flex;justify-content:center;align-items:center;gap:8px;min-height:44px;padding:10px 15px;border:1px solid var(--border);border-radius:12px;cursor:pointer;color:var(--text);background:var(--panel2);font-weight:750;transition:.18s ease}.btn:hover{transform:translateY(-1px);border-color:rgba(77,157,255,.55)}.btn-primary{background:linear-gradient(135deg,#3689f5,#2563eb);border-color:transparent;color:white}.btn-primary:hover{filter:brightness(1.08)}.btn-full{width:100%;margin-top:8px}.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}.output{display:none;margin-top:22px;padding-top:20px;border-top:1px solid var(--border)}.output.visible{display:block}.output textarea{width:100%;min-height:100px;resize:vertical;padding:13px;color:#d6e9ff;background:#06101f;border:1px solid var(--border);border-radius:12px;overflow-wrap:anywhere;font:12px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace}.message{margin-top:12px;font-size:13px;color:var(--muted);min-height:20px}.message.error{color:var(--danger)}.side{display:grid;gap:18px}.promo{padding:23px;overflow:hidden;background:linear-gradient(145deg,rgba(26,70,125,.95),rgba(12,27,48,.96) 72%)}.promo-icon{display:grid;place-items:center;width:48px;height:48px;margin-bottom:16px;border-radius:15px;background:rgba(92,225,230,.12);font-size:25px}.promo p{color:#c1d5ee;font-size:13px;margin:9px 0 18px}.promo .btn{background:#e7f3ff;color:#0a2341;border:0;width:100%}.community{padding:21px}.community h3{margin:0 0 6px;font-size:17px}.community p{color:var(--muted);font-size:13px;margin:0 0 12px}.community-link{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-top:1px solid var(--border);font-size:13px}.community-link span{color:var(--muted)}footer{padding:30px 0 36px;color:#7186a2;text-align:center;font-size:12px}.hidden{display:none!important}@media(max-width:760px){.layout{grid-template-columns:1fr}.stats{gap:9px}.stat{padding:13px}.stat-value{font-size:20px}.stat-label{font-size:11px}}@media(max-width:420px){.container{width:min(100% - 22px,1080px)}header{padding-top:20px}.stats{grid-template-columns:1fr}.stat{display:flex;align-items:center;justify-content:space-between}.stat-value{margin:0}.inline{grid-template-columns:1fr}.inline .btn{width:100%}}
 </style>
 </head>
 <body>
-<main>
-<header>
-  <div class="brand"><span class="mark">V</span><span>VEDA<br><small>SUBSCRIPTION TOOLS</small></span></div>
-  <span class="status">● VEDA</span>
-</header>
-
-<section class="hero">
-  <small class="green">ПРОСТО. ТОЧНО. ВАШЕ.</small>
-  <h1>Ваша подписка.<br><span class="green">Ваш контроль.</span></h1>
-  <p class="muted">Создавайте ссылки VEDA для VPN-приложений.</p>
+<header class="container"><a class="brand" href="/" aria-label="VEDA Converter — главная"><div class="logo">V</div><div><h1>VEDA Converter</h1><p>Конвертер ссылок подписок</p></div></a></header>
+<main class="container">
+<section class="hero"><div class="eyebrow"><span class="dot"></span> ИНСТРУМЕНТ VEDA</div><h2>Конвертируй подписки <span>быстро и удобно.</span></h2><p>Создавай ссылки подписок в нужном формате для совместимых VPN-клиентов. Просто, аккуратно и без лишних действий.</p></section>
+<section class="stats" aria-label="Статистика">
+<div class="stat"><div><div class="stat-label">Посещения страницы</div><div class="stat-value" id="visitors">—</div></div></div>
+<div class="stat"><div><div class="stat-label">Конвертации</div><div class="stat-value" id="conversions">—</div></div></div>
+<div class="stat"><div><div class="stat-label">Статус сервиса</div><div class="stat-value" id="serviceStatus">Проверка…</div></div></div>
 </section>
-
-<section class="card">
-  <h3>Сборщик ссылки</h3>
-  <p class="muted">Настройки подписки → готовая ссылка VEDA.</p>
-
-  <label for="url">UPSTREAM URL — ТВОЯ ПОДПИСКА</label>
-  <input id="url" type="url" placeholder="https://veda.beer/sub/blizzard-8325" autocomplete="url">
-
-  <label for="ua">UA — ШАБЛОН USER-AGENT</label>
-  <select id="ua">
-    <option value="default">— (дефолт: Happ / Android)</option>
-    <option value="happ">happ</option>
-    <option value="v2">v2</option>
-    <option value="incy">incy</option>
-    <option value="web">web (нужен os=)</option>
-  </select>
-
-  <div id="os-wrap" hidden>
-    <label for="os">OS — ОПЕРАЦИОННАЯ СИСТЕМА</label>
-    <select id="os">
-      <option value="">Выберите OS</option>
-      <option value="android">Android</option>
-      <option value="ios">iOS</option>
-      <option value="windows">Windows</option>
-      <option value="macos">macOS</option>
-      <option value="linux">Linux</option>
-    </select>
-  </div>
-
-  <label for="hwid">H — HWID (необязательно)</label>
-  <div class="actions">
-    <input id="hwid" type="text" maxlength="256" placeholder="HWID или оставь пустым" style="flex:1;min-width:180px">
-    <button class="secondary" id="random">Случайный</button>
-  </div>
-
-  <label for="mode">ФОРМАТ ОТВЕТА</label>
-  <select id="mode">
-    <option value="passthrough">— passthrough (как есть)</option>
-    <option value="url">url — plain-text ссылки</option>
-    <option value="b64">b64 — гарантированный base64</option>
-    <option value="jsonX">jsonX — Xray JSON</option>
-    <option value="jsonS">jsonS — Sing-box JSON</option>
-    <option value="yaml">yaml — Clash / Mihomo</option>
-  </select>
-
-  <div class="actions">
-    <button class="primary" id="go">Создать ссылку ↗</button>
-    <button class="secondary" id="clear">Очистить</button>
-  </div>
-
-  <div id="message" class="msg" role="status"></div>
-
-  <div id="result" class="result">
-    <label for="output">РЕЗУЛЬТАТ</label>
-    <textarea id="output" readonly></textarea>
-    <div class="actions">
-      <button class="primary" id="copy">Копировать результат</button>
-      <button class="secondary" id="open">Открыть в браузере</button>
-    </div>
-    <p class="note">Проверь ссылку в своём VPN-приложении перед передачей другим пользователям.</p>
-  </div>
-</section>
-
-<!-- VEDA COMMUNITY -->
-<section class="community-section">
-  <h2 class="community-title">VEDA COMMUNITY</h2>
-  <p class="community-description">
-    Наши официальные ресурсы и сообщество VEDA VPN.
-    Будьте в курсе новостей и обновлений!
-  </p>
-
-  <div class="community-grid">
-    <a class="community-link" href="https://t.me/vedavpn_official" target="_blank" rel="noopener noreferrer">
-      <strong>📢 Официальный канал</strong>
-      <span>Новости и обновления VEDA VPN</span>
-      <span class="community-action">Перейти в канал ↗</span>
-    </a>
-
-    <a class="community-link" href="https://t.me/vedavpn" target="_blank" rel="noopener noreferrer">
-      <strong>🌐 VEDA VPN</strong>
-      <span>Наше сообщество в Telegram</span>
-      <span class="community-action">Открыть сообщество ↗</span>
-    </a>
-
-    <a class="community-link" href="https://t.me/vedavpn_bot" target="_blank" rel="noopener noreferrer">
-      <strong>🤖 Telegram-бот</strong>
-      <span>Бот VEDA VPN</span>
-      <span class="community-action">Запустить бота ↗</span>
-    </a>
-
-    <a class="community-link" href="https://t.me/vedavpnforum" target="_blank" rel="noopener noreferrer">
-      <strong>💬 Форум</strong>
-      <span>Общение и помощь пользователям</span>
-      <span class="community-action">Перейти на форум ↗</span>
-    </a>
-  </div>
-</section>
-
-<footer>
-  <span>VEDA © 2026</span>
-  <span>SUBSCRIPTION TOOLS</span>
-  <span>PRIVACY FIRST</span>
-</footer>
-</main>
-
+<section class="layout">
+<div class="panel"><h3>Конвертер подписки</h3><p class="subheading">Укажи исходную ссылку и выбери параметры.</p>
+<form id="converterForm">
+<div class="field"><label for="url">Ссылка подписки</label><input id="url" name="url" type="url" placeholder="https://example.com/subscription" required autocomplete="url"></div>
+<div class="field"><label for="ua">Тип клиента (User-Agent)</label><select id="ua" name="ua"><option value="default">По умолчанию</option><option value="happ">Happ</option><option value="v2">V2Ray / V2RayNG</option><option value="incy">Incy</option><option value="web">Web</option></select></div>
+<div class="field hidden" id="osField"><label for="os">Операционная система</label><select id="os" name="os"><option value="android">Android</option><option value="ios">iOS</option><option value="windows">Windows</option><option value="macos">macOS</option><option value="linux">Linux</option></select></div>
+<div class="field"><label for="hwid">HWID <span class="hint">(необязательно)</span></label><div class="inline"><input id="hwid" name="hwid" type="text" placeholder="Идентификатор устройства"><button class="btn" id="randomHwid" type="button">Случайный HWID</button></div></div>
+<div class="field"><label for="format">Формат результата</label><select id="format" name="format"><option value="passthrough">Исходная ссылка</option><option value="url">URL-кодирование</option><option value="b64">Base64</option><option value="jsonX">JSON (формат X)</option><option value="jsonS">JSON (формат S)</option><option value="yaml">YAML</option></select></div>
+<button class="btn btn-primary btn-full" type="submit">Создать ссылку подписки ↗</button><div class="message" id="formMessage" role="status" aria-live="polite"></div>
+</form>
+<div class="output" id="output"><label for="result">Результат</label><textarea id="result" readonly spellcheck="false"></textarea><div class="actions"><button class="btn btn-primary" id="copyResult" type="button">Скопировать</button><button class="btn" id="openResult" type="button">Открыть ссылку ↗</button><button class="btn" id="clearResult" type="button">Очистить</button></div></div>
+</div>
+<aside class="side">
+<section class="promo"><div class="promo-icon">⚡</div><h3>Попробуй VEDA VPN</h3><p>Подключайся к VEDA VPN и узнай больше о сервисе, настройке и доступных возможностях в официальном Telegram-боте.</p><a class="btn" href="https://t.me/vedavpn_bot" target="_blank" rel="noopener noreferrer">Открыть VEDA VPN ↗</a></section>
+<section class="panel community"><h3>Сообщество VEDA</h3><p>Новости, поддержка и общение.</p><a class="community-link" href="https://t.me/vedavpn_official" target="_blank" rel="noopener noreferrer">Официальный канал <span>↗</span></a><a class="community-link" href="https://t.me/vedavpn" target="_blank" rel="noopener noreferrer">Новости VEDA <span>↗</span></a><a class="community-link" href="https://t.me/vedavpn_bot" target="_blank" rel="noopener noreferrer">Telegram-бот <span>↗</span></a><a class="community-link" href="https://t.me/vedavpnforum" target="_blank" rel="noopener noreferrer">Форум сообщества <span>↗</span></a></section>
+</aside></section></main>
+<footer class="container">VEDA Converter · Используй только ссылки, к которым у тебя есть доступ.</footer>
 <script>
-const $ = id => document.getElementById(id);
-
-$('ua').addEventListener('change', () => {
-  $('os-wrap').hidden = $('ua').value !== 'web';
-});
-
-$('random').addEventListener('click', () => {
-  const bytes = new Uint8Array(8);
-  crypto.getRandomValues(bytes);
-  $('hwid').value = [...bytes].map(x => x.toString(16).padStart(2,'0')).join('');
-});
-
-$('go').addEventListener('click', () => {
-  $('message').textContent = '';
-  $('result').style.display = 'none';
-
-  let source;
-  try {
-    source = new URL($('url').value.trim());
-    if (!['http:', 'https:'].includes(source.protocol)) throw Error();
-  } catch {
-    $('message').textContent = 'Введите корректный HTTP или HTTPS URL.';
-    return;
-  }
-
-  const ua = $('ua').value;
-  const os = $('os').value;
-  if (ua === 'web' && !os) {
-    $('message').textContent = 'Для шаблона web необходимо выбрать OS.';
-    return;
-  }
-
-  const params = new URLSearchParams();
-  params.set('url', source.href);
-  params.set('ua', ua);
-  params.set('format', $('mode').value);
-  if (os) params.set('os', os);
-  if ($('hwid').value.trim()) params.set('hwid', $('hwid').value.trim());
-
-  $('output').value = location.origin + '/sub?' + params.toString();
-  $('result').style.display = 'block';
-  $('message').textContent = 'Ссылка VEDA создана. Сначала проверь её работу.';
-});
-
-$('copy').addEventListener('click', async () => {
-  try {
-    await navigator.clipboard.writeText($('output').value);
-    $('message').textContent = 'Ссылка скопирована.';
-  } catch {
-    $('output').select();
-    document.execCommand('copy');
-    $('message').textContent = 'Выдели и скопируй ссылку.';
-  }
-});
-
-$('open').addEventListener('click', () => {
-  window.open($('output').value, '_blank', 'noopener');
-});
-
-$('clear').addEventListener('click', () => {
-  $('url').value = '';
-  $('hwid').value = '';
-  $('ua').value = 'default';
-  $('os').value = '';
-  $('mode').value = 'passthrough';
-  $('os-wrap').hidden = true;
-  $('output').value = '';
-  $('message').textContent = '';
-  $('result').style.display = 'none';
-});
+const form=document.getElementById('converterForm'),urlInput=document.getElementById('url'),uaInput=document.getElementById('ua'),osField=document.getElementById('osField'),osInput=document.getElementById('os'),hwidInput=document.getElementById('hwid'),formatInput=document.getElementById('format'),resultOutput=document.getElementById('output'),resultInput=document.getElementById('result'),message=document.getElementById('formMessage');
+uaInput.addEventListener('change',()=>osField.classList.toggle('hidden',uaInput.value!=='happ'));
+document.getElementById('randomHwid').addEventListener('click',()=>{if(crypto.randomUUID){hwidInput.value=crypto.randomUUID()}else{hwidInput.value='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:(r&3|8)).toString(16)})}});
+async function loadStats(){try{const [s,h]=await Promise.all([fetch('/api/stats'),fetch('/api/health')]);if(s.ok){const d=await s.json();document.getElementById('visitors').textContent=Number(d.visitors||0).toLocaleString('ru-RU');document.getElementById('conversions').textContent=Number(d.conversions||0).toLocaleString('ru-RU')}document.getElementById('serviceStatus').textContent=h.ok?'Онлайн':'Проблема'}catch(_){document.getElementById('serviceStatus').textContent='Недоступен'}}
+async function registerVisit(){try{await fetch('/api/stats/visit',{method:'POST'})}catch(_){}}
+form.addEventListener('submit',async e=>{e.preventDefault();message.textContent='';message.classList.remove('error');const p=new URLSearchParams();p.set('url',urlInput.value.trim());p.set('ua',uaInput.value);p.set('format',formatInput.value);if(uaInput.value==='happ')p.set('os',osInput.value);if(hwidInput.value.trim())p.set('hwid',hwidInput.value.trim());resultInput.value=`${location.origin}/sub?${p.toString()}`;resultOutput.classList.add('visible');message.textContent='Ссылка создана. Проверь её и скопируй.';try{const r=await fetch('/api/stats/conversion',{method:'POST'});if(r.ok){const d=await r.json();document.getElementById('conversions').textContent=Number(d.conversions||0).toLocaleString('ru-RU')}}catch(_){}});
+document.getElementById('copyResult').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(resultInput.value);message.textContent='Ссылка скопирована.';message.classList.remove('error')}catch(_){resultInput.focus();resultInput.select();const ok=document.execCommand('copy');message.textContent=ok?'Ссылка скопирована.':'Не удалось скопировать. Выдели ссылку вручную.';message.classList.toggle('error',!ok)}});
+document.getElementById('openResult').addEventListener('click',()=>{if(resultInput.value.trim())window.open(resultInput.value.trim(),'_blank','noopener,noreferrer')});
+document.getElementById('clearResult').addEventListener('click',()=>{resultInput.value='';resultOutput.classList.remove('visible');message.textContent=''});
+registerVisit();loadStats();
 </script>
 </body>
 </html>
